@@ -8,6 +8,11 @@ module.exports = {
             handler: 'custom-controller.testApi'
         },
         {
+            method: "GET",
+            path: '/student/list',
+            handler: 'custom-controller.getStudentList'
+        },
+        {
             method: "POST",
             path: '/student-info/create',
             handler: 'custom-controller.createStudent'

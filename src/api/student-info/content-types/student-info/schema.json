@@ -47,11 +47,16 @@
     "school_year": {
       "type": "string"
     },
-    "student_type": {
-      "type": "string"
-    },
     "student_id": {
       "type": "string"
+    },
+    "student_type": {
+      "type": "enumeration",
+      "enum": [
+        "College",
+        "SHS"
+      ],
+      "default": "College"
     }
   }
 }

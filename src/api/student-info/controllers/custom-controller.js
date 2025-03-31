@@ -8,6 +8,23 @@ module.exports = createCoreController(
       ctx.status = 200;
     },
 
+    async getStudentList(ctx) {
+      try {
+        console.log("[getStudentList] Incoming Request");
+        const result = await strapi.documents("api::student-info.student-info").findMany({
+          orderBy: { id: "DESC" }
+        })
+
+        if (result) {
+          ctx.status = 200;
+          return ctx.body = result;
+        }
+      } catch(err) {
+        console.log("[getStudentList] Error: ", err.message);
+        return ctx.badRequest(err.message, err);
+      }
+    },
+
     async createStudent(ctx) {
       try {
         console.log("[createStudent] Incoming Request");
@@ -25,6 +42,7 @@ module.exports = createCoreController(
           middle_name,
           gender,
           contact_number,
+          student_type
         } = ctx.request.body;
 
         let myPayload = {
@@ -70,7 +88,8 @@ module.exports = createCoreController(
                 first_name: first_name,
                 middle_name: middle_name,
                 gender: gender,
-                contact_number: contact_number
+                contact_number: contact_number,
+                student_type: student_type
             }
           });
 

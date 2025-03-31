@@ -404,7 +404,8 @@ export interface ApiStudentInfoStudentInfo extends Struct.CollectionTypeSchema {
     semester: Schema.Attribute.String;
     student_id: Schema.Attribute.String;
     student_no: Schema.Attribute.String;
-    student_type: Schema.Attribute.String;
+    student_type: Schema.Attribute.Enumeration<['College', 'SHS']> &
+      Schema.Attribute.DefaultTo<'College'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
