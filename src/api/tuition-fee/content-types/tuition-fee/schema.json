@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tuition_fees",
+  "info": {
+    "singularName": "tuition-fee",
+    "pluralName": "tuition-fees",
+    "displayName": "TuitionFee",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "student_no": {
+      "type": "string"
+    },
+    "tuition_fee": {
+      "type": "decimal",
+      "default": 0
+    },
+    "discount": {
+      "type": "decimal",
+      "default": 0
+    },
+    "downpayment": {
+      "type": "decimal",
+      "default": 0
+    },
+    "student_info": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::student-info.student-info",
+      "mappedBy": "tuition_fee"
+    },
+    "student_id": {
+      "type": "string"
+    }
+  }
+}

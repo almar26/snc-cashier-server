@@ -1,3 +1,5 @@
+const tuitionFee = require("../../tuition-fee/controllers/tuition-fee");
+
 //@ts-ignore
 const { createCoreController } = require("@strapi/strapi").factories;
 module.exports = createCoreController(
@@ -42,7 +44,10 @@ module.exports = createCoreController(
           middle_name,
           gender,
           contact_number,
-          student_type
+          student_type,
+          tuition_fee,
+          discount,
+          downpayment
         } = ctx.request.body;
 
         let myPayload = {
@@ -89,10 +94,24 @@ module.exports = createCoreController(
                 middle_name: middle_name,
                 gender: gender,
                 contact_number: contact_number,
-                student_type: student_type
+                student_type: student_type,
             }
           });
 
+          // Create tuition fee data
+          await strapi.documents("api::tuition-fee.tuition-fee").create({
+            data: {
+              student_id: result.documentId,
+              student_no: student_no,
+              tuition_fee: tuition_fee,
+              discount: discount,
+              downpayment: downpayment,
+              student_info: {
+                connect: [result.id]
+              }
+            }
+          })
+          console.log("result: ", result)
           if (result) {
             myPayload.data = result;
             ctx.status = 200;
@@ -106,5 +125,21 @@ module.exports = createCoreController(
         return ctx.badRequest(err.message, err);
       }
     },
+
+    async getStudentTuitionFee(ctx) {
+      try {
+
+          const result = await strapi.documents("api::student-info.student-info").findMany({
+              populate: ["tuition_fee"]
+          })
+
+          if (result) {
+              ctx.status = 200;
+              return ctx.body = result;
+          }
+      } catch (err) {
+          return ctx.badRequest(err.message, err);
+      }
+  }
   })
 );

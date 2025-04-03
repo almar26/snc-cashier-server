@@ -47,9 +47,6 @@
     "school_year": {
       "type": "string"
     },
-    "student_id": {
-      "type": "string"
-    },
     "student_type": {
       "type": "enumeration",
       "enum": [
@@ -57,6 +54,12 @@
         "SHS"
       ],
       "default": "College"
+    },
+    "tuition_fee": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tuition-fee.tuition-fee",
+      "inversedBy": "student_info"
     }
   }
 }

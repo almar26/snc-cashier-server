@@ -16,7 +16,12 @@ module.exports = {
             method: "POST",
             path: '/student-info/create',
             handler: 'custom-controller.createStudent'
-        }
+        },
+        {
+            method: "GET",
+            path: '/student-info/tuition-fee',
+            handler: 'custom-controller.getStudentTuitionFee'
+        },
         
     ]
 }

@@ -69,7 +69,8 @@
       "type": "enumeration",
       "enum": [
         "cashier",
-        "head-cashier"
+        "head-cashier",
+        "administrator"
       ],
       "default": "cashier"
     },

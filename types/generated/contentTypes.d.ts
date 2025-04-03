@@ -402,10 +402,50 @@ export interface ApiStudentInfoStudentInfo extends Struct.CollectionTypeSchema {
     school_year: Schema.Attribute.String;
     section: Schema.Attribute.String;
     semester: Schema.Attribute.String;
-    student_id: Schema.Attribute.String;
     student_no: Schema.Attribute.String;
     student_type: Schema.Attribute.Enumeration<['College', 'SHS']> &
       Schema.Attribute.DefaultTo<'College'>;
+    tuition_fee: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::tuition-fee.tuition-fee'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTuitionFeeTuitionFee extends Struct.CollectionTypeSchema {
+  collectionName: 'tuition_fees';
+  info: {
+    description: '';
+    displayName: 'TuitionFee';
+    pluralName: 'tuition-fees';
+    singularName: 'tuition-fee';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discount: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    downpayment: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::tuition-fee.tuition-fee'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    student_id: Schema.Attribute.String;
+    student_info: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::student-info.student-info'
+    >;
+    student_no: Schema.Attribute.String;
+    tuition_fee: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -905,7 +945,9 @@ export interface PluginUsersPermissionsUser
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    user_role: Schema.Attribute.Enumeration<['cashier', 'head-cashier']> &
+    user_role: Schema.Attribute.Enumeration<
+      ['cashier', 'head-cashier', 'administrator']
+    > &
       Schema.Attribute.DefaultTo<'cashier'>;
     username: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -927,6 +969,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::student-info.student-info': ApiStudentInfoStudentInfo;
+      'api::tuition-fee.tuition-fee': ApiTuitionFeeTuitionFee;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
