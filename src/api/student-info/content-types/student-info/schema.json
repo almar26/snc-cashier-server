@@ -55,11 +55,25 @@
       ],
       "default": "College"
     },
+    "course_type": {
+      "type": "enumeration",
+      "enum": [
+        "Regular",
+        "Diploma"
+      ],
+      "default": "Regular"
+    },
     "tuition_fee": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::tuition-fee.tuition-fee",
       "inversedBy": "student_info"
+    },
+    "payment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::payment.payment",
+      "mappedBy": "student_info"
     }
   }
 }

@@ -369,6 +369,48 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
+  collectionName: 'payments';
+  info: {
+    description: '';
+    displayName: 'Payment';
+    pluralName: 'payments';
+    singularName: 'payment';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::payment.payment'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    school_year: Schema.Attribute.String;
+    semester: Schema.Attribute.String;
+    student_id: Schema.Attribute.String;
+    student_info: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::student-info.student-info'
+    >;
+    student_no: Schema.Attribute.String;
+    tuition_fee: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::tuition-fee.tuition-fee'
+    >;
+    tuition_fee_amount: Schema.Attribute.Decimal;
+    tuition_fee_id: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiStudentInfoStudentInfo extends Struct.CollectionTypeSchema {
   collectionName: 'student_infos';
   info: {
@@ -384,6 +426,8 @@ export interface ApiStudentInfoStudentInfo extends Struct.CollectionTypeSchema {
     contact_number: Schema.Attribute.String;
     course: Schema.Attribute.String;
     course_code: Schema.Attribute.String;
+    course_type: Schema.Attribute.Enumeration<['Regular', 'Diploma']> &
+      Schema.Attribute.DefaultTo<'Regular'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -398,6 +442,7 @@ export interface ApiStudentInfoStudentInfo extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     major: Schema.Attribute.String;
     middle_name: Schema.Attribute.String;
+    payment: Schema.Attribute.Relation<'oneToOne', 'api::payment.payment'>;
     publishedAt: Schema.Attribute.DateTime;
     school_year: Schema.Attribute.String;
     section: Schema.Attribute.String;
@@ -427,18 +472,34 @@ export interface ApiTuitionFeeTuitionFee extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    balance: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     discount: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     downpayment: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    finals_amount: Schema.Attribute.Decimal;
+    finals_due_date: Schema.Attribute.Date;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::tuition-fee.tuition-fee'
     > &
       Schema.Attribute.Private;
+    lt_midterm_amount: Schema.Attribute.Decimal;
+    lt_midterm_due_date: Schema.Attribute.Date;
+    lt_prelim_amount: Schema.Attribute.Decimal;
+    lt_prelim_due_date: Schema.Attribute.Date;
+    midterm_amount: Schema.Attribute.Decimal;
+    midterm_due_date: Schema.Attribute.Date;
+    payment: Schema.Attribute.Relation<'oneToOne', 'api::payment.payment'>;
+    pre_finals_amount: Schema.Attribute.Decimal;
+    pre_finals_due_date: Schema.Attribute.Date;
+    prelim_amount: Schema.Attribute.Decimal;
+    prelim_due_date: Schema.Attribute.Date;
     publishedAt: Schema.Attribute.DateTime;
+    school_year: Schema.Attribute.String;
+    semester: Schema.Attribute.String;
     student_id: Schema.Attribute.String;
     student_info: Schema.Attribute.Relation<
       'oneToOne',
@@ -968,6 +1029,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::payment.payment': ApiPaymentPayment;
       'api::student-info.student-info': ApiStudentInfoStudentInfo;
       'api::tuition-fee.tuition-fee': ApiTuitionFeeTuitionFee;
       'plugin::content-releases.release': PluginContentReleasesRelease;

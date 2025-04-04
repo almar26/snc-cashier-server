@@ -14,6 +14,15 @@
     "student_no": {
       "type": "string"
     },
+    "student_id": {
+      "type": "string"
+    },
+    "semester": {
+      "type": "string"
+    },
+    "school_year": {
+      "type": "string"
+    },
     "tuition_fee": {
       "type": "decimal",
       "default": 0
@@ -26,14 +35,57 @@
       "type": "decimal",
       "default": 0
     },
+    "lt_prelim_amount": {
+      "type": "decimal"
+    },
+    "prelim_amount": {
+      "type": "decimal"
+    },
+    "lt_midterm_amount": {
+      "type": "decimal"
+    },
+    "midterm_amount": {
+      "type": "decimal"
+    },
+    "pre_finals_amount": {
+      "type": "decimal"
+    },
+    "finals_amount": {
+      "type": "decimal"
+    },
+    "balance": {
+      "type": "decimal",
+      "default": 0
+    },
+    "lt_prelim_due_date": {
+      "type": "date"
+    },
+    "prelim_due_date": {
+      "type": "date"
+    },
+    "lt_midterm_due_date": {
+      "type": "date"
+    },
+    "midterm_due_date": {
+      "type": "date"
+    },
+    "pre_finals_due_date": {
+      "type": "date"
+    },
+    "finals_due_date": {
+      "type": "date"
+    },
     "student_info": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::student-info.student-info",
       "mappedBy": "tuition_fee"
     },
-    "student_id": {
-      "type": "string"
+    "payment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::payment.payment",
+      "mappedBy": "tuition_fee"
     }
   }
 }

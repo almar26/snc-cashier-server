@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payments",
+  "info": {
+    "singularName": "payment",
+    "pluralName": "payments",
+    "displayName": "Payment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "tuition_fee_id": {
+      "type": "string"
+    },
+    "student_id": {
+      "type": "string"
+    },
+    "student_no": {
+      "type": "string"
+    },
+    "semester": {
+      "type": "string"
+    },
+    "school_year": {
+      "type": "string"
+    },
+    "tuition_fee_amount": {
+      "type": "decimal"
+    },
+    "tuition_fee": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tuition-fee.tuition-fee",
+      "inversedBy": "payment"
+    },
+    "student_info": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::student-info.student-info",
+      "inversedBy": "payment"
+    }
+  }
+}
