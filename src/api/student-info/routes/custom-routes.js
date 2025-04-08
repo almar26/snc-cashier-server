@@ -19,6 +19,11 @@ module.exports = {
         },
         {
             method: "GET",
+            path: '/student-info/:documentid',
+            handler: 'custom-controller.getStudentDetails'
+        },
+        {
+            method: "GET",
             path: '/student-info/tuition-fee',
             handler: 'custom-controller.getStudentTuitionFee'
         },

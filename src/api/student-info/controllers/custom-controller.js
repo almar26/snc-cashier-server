@@ -161,6 +161,34 @@ module.exports = createCoreController(
       }
     },
 
+    async getStudentDetails(ctx) {
+      try {
+        console.log("[getStudentDetails] Incoming Request");
+        const { documentid } = ctx.params;
+
+        let myPayload = {
+          data: [],
+          message: "Successfully fetch data!",
+          status: "success"
+        };
+
+        const result = await strapi.documents('api::student-info.student-info').findOne({
+          documentId: documentid,
+          populate: ["tuition_fee", "payment"]
+        })
+
+        console.log(result)
+        if (result) {
+          myPayload.data = result;
+          ctx.status = 200;
+          return ctx.body = myPayload;
+        }
+      } catch (err) {
+        console.log("[getStudentDetails] Error: ", err.message);
+        return ctx.badRequest(err.message, err);
+      }
+    },
+
     async getStudentTuitionFee(ctx) {
       try {
 
