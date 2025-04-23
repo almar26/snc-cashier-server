@@ -24,9 +24,14 @@ module.exports = {
         },
         {
             method: "GET",
-            path: '/student-info/tuition-fee',
+            path: '/student-info/list/tuition-fee',
             handler: 'custom-controller.getStudentTuitionFee'
         },
+        {
+            method: "GET",
+            path: '/student-info/account/search',
+            handler: 'custom-controller.searchStudentAccount'
+        }
         
     ]
 }

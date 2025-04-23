@@ -13,15 +13,17 @@ module.exports = createCoreController(
     async getStudentList(ctx) {
       try {
         console.log("[getStudentList] Incoming Request");
-        const result = await strapi.documents("api::student-info.student-info").findMany({
-          orderBy: { id: "DESC" }
-        })
+        const result = await strapi
+          .documents("api::student-info.student-info")
+          .findMany({
+            orderBy: { id: "DESC" },
+          });
 
         if (result) {
           ctx.status = 200;
-          return ctx.body = result;
+          return (ctx.body = result);
         }
-      } catch(err) {
+      } catch (err) {
         console.log("[getStudentList] Error: ", err.message);
         return ctx.badRequest(err.message, err);
       }
@@ -47,7 +49,7 @@ module.exports = createCoreController(
           course_type,
           tuition_fee,
           discount,
-          downpayment
+          downpayment,
         } = ctx.request.body;
 
         let myPayload = {
@@ -72,42 +74,45 @@ module.exports = createCoreController(
             },
           });
 
-          if (checkDuplicate.length != 0) {
-            console.log("[createStudent] Error: ", checkDuplicate);
-            return ctx.body = existingPayload;
-          }
+        if (checkDuplicate.length != 0) {
+          console.log("[createStudent] Error: ", checkDuplicate);
+          return (ctx.body = existingPayload);
+        }
 
-
-          // Create a new record, if there is no existing record
-          const result = await strapi.documents('api::student-info.student-info').create({
+        // Create a new record, if there is no existing record
+        const result = await strapi
+          .documents("api::student-info.student-info")
+          .create({
             data: {
-                student_id: student_id,
-                semester: semester,
-                school_year: school_year,
-                student_no: student_no,
-                course: course,
-                course_code: course_code,
-                major: major,
-                section: section,
-                last_name: last_name,
-                first_name: first_name,
-                middle_name: middle_name,
-                gender: gender,
-                contact_number: contact_number,
-                course_type: course_type,
-            }
+              student_id: student_id,
+              semester: semester,
+              school_year: school_year,
+              student_no: student_no,
+              course: course,
+              course_code: course_code,
+              major: major,
+              section: section,
+              last_name: last_name,
+              first_name: first_name,
+              middle_name: middle_name,
+              gender: gender,
+              contact_number: contact_number,
+              course_type: course_type,
+            },
           });
 
-          // Calculate the monthly payment
-          const total_payment = downpayment + discount;
-          const balance = tuition_fee - total_payment
-          const monthly_payment = balance / 6;
-          console.log("Total payment: ", total_payment)
-          console.log("Balance: ", balance)
-          console.log("Monthly Payment: ", monthly_payment)
+        // Calculate the monthly payment
+        const total_payment = downpayment + discount;
+        const balance = tuition_fee - total_payment;
+        const monthly_payment = balance / 6;
+        console.log("Total payment: ", total_payment);
+        console.log("Balance: ", balance);
+        console.log("Monthly Payment: ", monthly_payment);
 
-          // Create tuition fee data
-          const tuition_fee_result = await strapi.documents("api::tuition-fee.tuition-fee").create({
+        // Create tuition fee data
+        const tuition_fee_result = await strapi
+          .documents("api::tuition-fee.tuition-fee")
+          .create({
             data: {
               student_id: result.documentId,
               student_no: student_no,
@@ -124,37 +129,34 @@ module.exports = createCoreController(
               finals_amount: monthly_payment,
               balance: balance,
               student_info: {
-                connect: [result.id]
-              }
-            }
-          })
-
-          // Create Payment data
-          await strapi.documents("api::payment.payment").create({
-            data: {
-              tuition_fee_id: tuition_fee_result.documentId,
-              student_id: result.documentId,
-              student_no: student_no,
-              semester: semester,
-              school_year: school_year,
-              tuition_fee_amount: tuition_fee,
-              tuition_fee: {
-                connect: [tuition_fee_result.id]
+                connect: [result.id],
               },
-              student_info: {
-                connect: [result.id]
-              }
-            }
-          })
-          console.log("result: ", result)
-          if (result) {
-            myPayload.data = result;
-            ctx.status = 200;
-            return ctx.body = myPayload;
-          }
+            },
+          });
 
-
-
+        // Create Payment data
+        await strapi.documents("api::payment.payment").create({
+          data: {
+            tuition_fee_id: tuition_fee_result.documentId,
+            student_id: result.documentId,
+            student_no: student_no,
+            semester: semester,
+            school_year: school_year,
+            tuition_fee_amount: tuition_fee,
+            tuition_fee: {
+              connect: [tuition_fee_result.id],
+            },
+            student_info: {
+              connect: [result.id],
+            },
+          },
+        });
+        console.log("result: ", result);
+        if (result) {
+          myPayload.data = result;
+          ctx.status = 200;
+          return (ctx.body = myPayload);
+        }
       } catch (err) {
         console.log("[createStudent] Error: ", err.message);
         return ctx.badRequest(err.message, err);
@@ -163,25 +165,27 @@ module.exports = createCoreController(
 
     async getStudentDetails(ctx) {
       try {
-        console.log("[getStudentDetails] Incoming Request");
+        console.log("[getStudentDetails] Incoming Request 1");
         const { documentid } = ctx.params;
 
         let myPayload = {
           data: [],
           message: "Successfully fetch data!",
-          status: "success"
+          status: "success",
         };
 
-        const result = await strapi.documents('api::student-info.student-info').findOne({
-          documentId: documentid,
-          populate: ["tuition_fee", "payment"]
-        })
+        const result = await strapi
+          .documents("api::student-info.student-info")
+          .findOne({
+            documentId: documentid,
+            populate: ["tuition_fee", "payment"],
+          });
 
-        console.log(result)
+        console.log(result);
         if (result) {
           myPayload.data = result;
           ctx.status = 200;
-          return ctx.body = myPayload;
+          return (ctx.body = myPayload);
         }
       } catch (err) {
         console.log("[getStudentDetails] Error: ", err.message);
@@ -191,18 +195,56 @@ module.exports = createCoreController(
 
     async getStudentTuitionFee(ctx) {
       try {
+        console.log("[getStudentTuitionFee] Incoming Request");
+        const result = await strapi
+          .documents("api::student-info.student-info")
+          .findMany({
+            populate: ["tuition_fee", "payment"],
+          });
 
-          const result = await strapi.documents("api::student-info.student-info").findMany({
-              populate: ["tuition_fee", "payment"]
-          })
-
-          if (result) {
-              ctx.status = 200;
-              return ctx.body = result;
-          }
+        if (result) {
+          ctx.status = 200;
+          return (ctx.body = result);
+        }
       } catch (err) {
-          return ctx.badRequest(err.message, err);
+        return ctx.badRequest(err.message, err);
       }
-  }
+    },
+
+    // Search Student Account Info
+    async searchStudentAccount(ctx) {
+      try {
+        console.log("[searchStudentAccount] Incoming Request");
+        const queryObj = ctx.request.query;
+        console.log("Query Params: ", queryObj);
+
+        const result = await strapi
+          .documents("api::student-info.student-info")
+          .findMany({
+            where: {
+              $or: [
+                {
+                  student_no: queryObj.searchid,
+                },
+                {
+                  last_name: { $eqi: queryObj.searchid},
+                },
+                {
+                  first_name: { $eqi: queryObj.searchid },
+                },
+              ],
+            },
+            orderBy: { student_no: "ASC" },
+          });
+
+        if (result) {
+          ctx.status = 200;
+          return (ctx.body = result);
+        }
+      } catch (err) {
+        console.log("[searchStudentAccount] Error: ", err.message);
+        return ctx.badRequest(err.message, err);
+      }
+    },
   })
 );
