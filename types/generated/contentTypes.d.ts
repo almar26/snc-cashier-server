@@ -492,7 +492,10 @@ export interface ApiTuitionFeeTuitionFee extends Struct.CollectionTypeSchema {
     lt_prelim_due_date: Schema.Attribute.Date;
     midterm_amount: Schema.Attribute.Decimal;
     midterm_due_date: Schema.Attribute.Date;
-    payment: Schema.Attribute.Relation<'oneToOne', 'api::payment.payment'>;
+    payment_histoty: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::payment.payment'
+    >;
     pre_finals_amount: Schema.Attribute.Decimal;
     pre_finals_due_date: Schema.Attribute.Date;
     prelim_amount: Schema.Attribute.Decimal;

@@ -7,7 +7,7 @@ module.exports = createCoreController('api::tuition-fee.tuition-fee',
             try {
 
                 const result = await strapi.documents("api::tuition-fee.tuition-fee").findMany({
-                    populate: ["studentid"]
+                    populate: ["student_info", "payment"]
                 })
 
                 if (result) {
@@ -17,6 +17,26 @@ module.exports = createCoreController('api::tuition-fee.tuition-fee',
             } catch (err) {
                 return ctx.badRequest(err.message, err);
             }
+        },
+
+        // Get Student Tuition-Fee details
+    async getStudentTuitionFeeDetails(ctx) {
+        try {
+          console.log("[getStudentTuitionFeeDetails] Incoming Request");
+          const { documentid } = ctx.params;
+            const result = await strapi
+            .documents("api::student-info.student-info")
+            .findOne({
+              documentId: documentid,
+              populate: ["tuition_fee", "payment"],
+            });
+          if (result) {
+            ctx.status = 200;
+            return (ctx.body = result);
+          }
+        } catch (err) {
+          return ctx.badRequest(err.message, err);
         }
+      },
     })
 );

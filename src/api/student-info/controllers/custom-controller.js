@@ -193,9 +193,9 @@ module.exports = createCoreController(
       }
     },
 
-    async getStudentTuitionFee(ctx) {
+    async getStudentsTuitionFeeList(ctx) {
       try {
-        console.log("[getStudentTuitionFee] Incoming Request");
+        console.log("[getStudentsTuitionFeeList] Incoming Request");
         const result = await strapi
           .documents("api::student-info.student-info")
           .findMany({
@@ -246,5 +246,9 @@ module.exports = createCoreController(
         return ctx.badRequest(err.message, err);
       }
     },
+
+    
+
+
   })
 );

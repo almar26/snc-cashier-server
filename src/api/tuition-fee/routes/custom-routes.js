@@ -7,6 +7,11 @@ module.exports = {
             path: '/tuition-fee/list',
             handler: 'custom-controller.getStudentTuitionFee'
         },
+        {
+            method: "GET",
+            path: '/tuition-fee/account/:documentid',
+            handler: 'custom-controller.getStudentTuitionFeeDetails'
+        }
         
     ]
 }

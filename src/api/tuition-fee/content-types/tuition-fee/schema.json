@@ -81,11 +81,11 @@
       "target": "api::student-info.student-info",
       "mappedBy": "tuition_fee"
     },
-    "payment": {
+    "payment_histoty": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::payment.payment",
-      "mappedBy": "tuition_fee"
+      "inversedBy": "tuition_fee"
     }
   }
 }
