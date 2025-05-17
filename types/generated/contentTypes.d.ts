@@ -390,6 +390,9 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'api::payment.payment'
     > &
       Schema.Attribute.Private;
+    or_number: Schema.Attribute.String;
+    payment_name: Schema.Attribute.String;
+    payment_type: Schema.Attribute.Enumeration<['tuition_fee', 'other_fees']>;
     publishedAt: Schema.Attribute.DateTime;
     school_year: Schema.Attribute.String;
     semester: Schema.Attribute.String;

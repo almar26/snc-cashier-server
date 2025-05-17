@@ -40,6 +40,19 @@
       "relation": "oneToOne",
       "target": "api::tuition-fee.tuition-fee",
       "mappedBy": "payment_histoty"
+    },
+    "payment_type": {
+      "type": "enumeration",
+      "enum": [
+        "tuition_fee",
+        "other_fees"
+      ]
+    },
+    "payment_name": {
+      "type": "string"
+    },
+    "or_number": {
+      "type": "string"
     }
   }
 }
