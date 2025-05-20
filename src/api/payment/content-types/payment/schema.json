@@ -26,7 +26,7 @@
     "school_year": {
       "type": "string"
     },
-    "tuition_fee_amount": {
+    "payment_amount": {
       "type": "decimal"
     },
     "student_info": {
@@ -45,7 +45,8 @@
       "type": "enumeration",
       "enum": [
         "tuition_fee",
-        "other_fees"
+        "other_fees",
+        "old_balance"
       ]
     },
     "payment_name": {
@@ -53,6 +54,28 @@
     },
     "or_number": {
       "type": "string"
+    },
+    "payment_number": {
+      "type": "integer"
+    },
+    "amount_paid": {
+      "type": "decimal",
+      "default": 0
+    },
+    "date_paid": {
+      "type": "date"
+    },
+    "due_date": {
+      "type": "date"
+    },
+    "payment_status": {
+      "type": "enumeration",
+      "enum": [
+        "paid",
+        "unpaid",
+        "partial"
+      ],
+      "default": "unpaid"
     }
   }
 }

@@ -135,14 +135,23 @@ module.exports = createCoreController(
           });
 
         // Create Payment data
-        await strapi.documents("api::payment.payment").create({
-          data: {
+        const now = new Date();
+        const formattedDate = now.toISOString().split('T')[0];
+        const entries = [
+          {
             tuition_fee_id: tuition_fee_result.documentId,
             student_id: result.documentId,
             student_no: student_no,
             semester: semester,
             school_year: school_year,
-            tuition_fee_amount: tuition_fee,
+            payment_number: 1,
+            payment_amount: downpayment,
+            payment_type: "tuition_fee",
+            payment_name: "Downpayment",
+            amount_paid: downpayment,
+            date_paid: formattedDate,
+            or_number: "",
+            payment_status: "paid",
             tuition_fee: {
               connect: [tuition_fee_result.id],
             },
@@ -150,7 +159,149 @@ module.exports = createCoreController(
               connect: [result.id],
             },
           },
-        });
+          {
+            tuition_fee_id: tuition_fee_result.documentId,
+            student_id: result.documentId,
+            student_no: student_no,
+            semester: semester,
+            school_year: school_year,
+            payment_number: 2,
+            payment_amount: monthly_payment,
+            payment_type: "tuition_fee",
+            payment_name: "Longtest Prelim",
+            or_number: "",
+            payment_status: "unpaid",
+            tuition_fee: {
+              connect: [tuition_fee_result.id],
+            },
+            student_info: {
+              connect: [result.id],
+            },
+          },
+          {
+            tuition_fee_id: tuition_fee_result.documentId,
+            student_id: result.documentId,
+            student_no: student_no,
+            semester: semester,
+            school_year: school_year,
+            payment_number: 3,
+            payment_amount: monthly_payment,
+            payment_type: "tuition_fee",
+            payment_name: "Prelim",
+            or_number: "",
+            payment_status: "unpaid",
+            tuition_fee: {
+              connect: [tuition_fee_result.id],
+            },
+            student_info: {
+              connect: [result.id],
+            },
+          },
+          {
+            tuition_fee_id: tuition_fee_result.documentId,
+            student_id: result.documentId,
+            student_no: student_no,
+            semester: semester,
+            school_year: school_year,
+            payment_number: 4,
+            payment_amount: monthly_payment,
+            payment_type: "tuition_fee",
+            payment_name: "Longtest Midterm",
+            or_number: "",
+            payment_status: "unpaid",
+            tuition_fee: {
+              connect: [tuition_fee_result.id],
+            },
+            student_info: {
+              connect: [result.id],
+            },
+          },
+          {
+            tuition_fee_id: tuition_fee_result.documentId,
+            student_id: result.documentId,
+            student_no: student_no,
+            semester: semester,
+            school_year: school_year,
+            payment_number: 5,
+            payment_amount: monthly_payment,
+            payment_type: "tuition_fee",
+            payment_name: "Midterm",
+            or_number: "",
+            payment_status: "unpaid",
+            tuition_fee: {
+              connect: [tuition_fee_result.id],
+            },
+            student_info: {
+              connect: [result.id],
+            },
+          },
+          {
+            tuition_fee_id: tuition_fee_result.documentId,
+            student_id: result.documentId,
+            student_no: student_no,
+            semester: semester,
+            school_year: school_year,
+            payment_number: 6,
+            payment_amount: monthly_payment,
+            payment_type: "tuition_fee",
+            payment_name: "Longtest Finals",
+            or_number: "",
+            payment_status: "unpaid",
+            tuition_fee: {
+              connect: [tuition_fee_result.id],
+            },
+            student_info: {
+              connect: [result.id],
+            },
+          },
+          {
+            tuition_fee_id: tuition_fee_result.documentId,
+            student_id: result.documentId,
+            student_no: student_no,
+            semester: semester,
+            school_year: school_year,
+            payment_number: 7,
+            payment_amount: monthly_payment,
+            payment_type: "tuition_fee",
+            payment_name: "Finals",
+            or_number: "",
+            payment_status: "unpaid",
+            tuition_fee: {
+              connect: [tuition_fee_result.id],
+            },
+            student_info: {
+              connect: [result.id],
+            },
+          },
+        ];
+
+        if (!Array.isArray(entries)) {
+          return ctx.badRequest('Request body should be an array');
+        }
+
+        const createdPayments = await Promise.all(
+          entries.map(entry => strapi.documents("api::payment.payment").create({ data: entry}))
+        )
+
+        //ctx.send(createdPayments)
+
+        // await strapi.documents("api::payment.payment").create({
+        //   data: {
+        //     tuition_fee_id: tuition_fee_result.documentId,
+        //     student_id: result.documentId,
+        //     student_no: student_no,
+        //     semester: semester,
+        //     school_year: school_year,
+        //     tuition_fee_amount: tuition_fee,
+        //     tuition_fee: {
+        //       connect: [tuition_fee_result.id],
+        //     },
+        //     student_info: {
+        //       connect: [result.id],
+        //     },
+        //   },
+        // });
+
         console.log("result: ", result);
         if (result) {
           myPayload.data = result;
@@ -227,7 +378,7 @@ module.exports = createCoreController(
                   student_no: queryObj.searchid,
                 },
                 {
-                  last_name: { $eqi: queryObj.searchid},
+                  last_name: { $eqi: queryObj.searchid },
                 },
                 {
                   first_name: { $eqi: queryObj.searchid },
@@ -246,9 +397,5 @@ module.exports = createCoreController(
         return ctx.badRequest(err.message, err);
       }
     },
-
-    
-
-
   })
 );

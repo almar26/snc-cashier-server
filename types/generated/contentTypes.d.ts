@@ -381,9 +381,12 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    amount_paid: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    date_paid: Schema.Attribute.Date;
+    due_date: Schema.Attribute.Date;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -391,8 +394,16 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     or_number: Schema.Attribute.String;
+    payment_amount: Schema.Attribute.Decimal;
     payment_name: Schema.Attribute.String;
-    payment_type: Schema.Attribute.Enumeration<['tuition_fee', 'other_fees']>;
+    payment_number: Schema.Attribute.Integer;
+    payment_status: Schema.Attribute.Enumeration<
+      ['paid', 'unpaid', 'partial']
+    > &
+      Schema.Attribute.DefaultTo<'unpaid'>;
+    payment_type: Schema.Attribute.Enumeration<
+      ['tuition_fee', 'other_fees', 'old_balance']
+    >;
     publishedAt: Schema.Attribute.DateTime;
     school_year: Schema.Attribute.String;
     semester: Schema.Attribute.String;
@@ -406,7 +417,6 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
       'oneToOne',
       'api::tuition-fee.tuition-fee'
     >;
-    tuition_fee_amount: Schema.Attribute.Decimal;
     tuition_fee_id: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
