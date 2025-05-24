@@ -14,7 +14,7 @@ module.exports = {
         },    
         {
             method: "GET",
-            path: '/payment/:studentid/dues',
+            path: '/payment/dues',
             handler: 'custom-controller.dues'
         },    
     ]

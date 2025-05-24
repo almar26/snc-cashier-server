@@ -26,7 +26,11 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
   },
 
   async dues(ctx) {
-    const { studentid } = ctx.params;
+    const { tuitionid } = ctx.params;
+    const queryObj = ctx.request.query;
+    const studentid = queryObj.student_id;
+    const semester = queryObj.semester;
+    const school_year = queryObj.school_year;
    
 
     // Get unpaid or partially paid invoices of this student
@@ -41,15 +45,23 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
           "createdAt",
         ],
         filters: {
-          student_id: studentid,
+          student_id: queryObj.student_id,
+          semester: queryObj.semester,
+          school_year: queryObj.school_year,
           payment_status: ["unpaid", "partial"],
         },
         orderBy: { due_date: "ASC" },
         pagination: { pageSize: 1000 },
       }
     );
-
     console.log("Invoices: ", invoices);
+
+    if (invoices.length === 0) {
+      return ctx.send({ 
+        message: 'No Tuition Fee found',
+        status: 'fail'
+      }, 200);
+    }
 
      const today = new Date();
     let previousDue = 0;
@@ -74,20 +86,12 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
         currentDue += balance;
       }
 
-      // if (isBefore(dueDate, today)) {
-      //   previousDue += balance;
-      // } else if (isToday(dueDate)) {
-      //   currentDue += balance;
-      // }
-
       totalBalance += balance;
       totalAmountDue = previousDue + currentDue;
 
       return {
         ...invoice,
         balance,
-        // isOverdue: isBefore(dueDate, today),
-        // isDueToday: isToday(dueDate),
         isOverdue: overdue,
         isDueToday: dueToday
       }
@@ -95,11 +99,13 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
 
     ctx.body = {
       studentid,
+      semester,
+       school_year,
       previousDue,
       currentDue,
       totalAmountDue,
-      totalBalance,
-      invoices: enrichedInvoices,
+      //totalBalance,
+      //invoices: enrichedInvoices,
     };
   },
 
