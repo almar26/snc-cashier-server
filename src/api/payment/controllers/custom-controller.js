@@ -38,6 +38,8 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
       "api::payment.payment",
       {
         fields: [
+          "payment_number",
+          "payment_name",
           "payment_amount",
           "amount_paid",
           "due_date",
@@ -48,13 +50,14 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
           student_id: queryObj.student_id,
           semester: queryObj.semester,
           school_year: queryObj.school_year,
-          payment_status: ["unpaid", "partial"],
+          payment_status: ["unpaid", "partial", "paid"],
         },
-        orderBy: { due_date: "ASC" },
+        orderBy: { payment_number: "ASC" },
         pagination: { pageSize: 1000 },
       }
     );
     console.log("Invoices: ", invoices);
+    const payment_summary = invoices;
 
     if (invoices.length === 0) {
       return ctx.send({ 
@@ -74,7 +77,7 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
 
     const enrichedInvoices = invoices.map(invoice => {
       const balance = invoice.payment_amount - invoice.amount_paid;
-      if (balance <= 0) return null;
+      // if (balance <= 0) return null;
 
       const dueDate = parseISO(invoice.due_date);
       const dueToday = isToday(dueDate);
@@ -104,8 +107,9 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
       previousDue,
       currentDue,
       totalAmountDue,
+      //payment_summary,
       //totalBalance,
-      //invoices: enrichedInvoices,
+      invoices: enrichedInvoices,
     };
   },
 
