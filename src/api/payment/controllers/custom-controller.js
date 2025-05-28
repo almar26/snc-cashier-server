@@ -108,7 +108,7 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
       currentDue,
       totalAmountDue,
       //payment_summary,
-      //totalBalance,
+      totalBalance,
       invoices: enrichedInvoices,
     };
   },
@@ -148,4 +148,28 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
       previousDue,
     };
   },
+
+  async paySelected(ctx) {
+    const updates = ctx.request.body;
+
+    if (!Array.isArray(updates)) {
+      return ctx.badRequest('Request body must be an array');
+    }
+
+    try {
+      const results = await Promise.all(
+        updates.map(async (update) => {
+          const { id, ...fields } = update;
+          if(!id || Object.keys(fields).length === 0) return null;
+
+          return await strapi.entityService.update("api::payment.payment", id, {
+            data: fields,
+          })
+        })
+      );
+      return ctx.send({ success: true, results });
+    } catch (err) {
+      return ctx.internalServerError('Bulk update failed', err);
+    }
+  }
 }));

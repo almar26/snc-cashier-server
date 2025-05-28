@@ -16,6 +16,11 @@ module.exports = {
             method: "GET",
             path: '/payment/dues',
             handler: 'custom-controller.dues'
+        },   
+        {
+            method: "POST",
+            path: '/payment/tuition-payment',
+            handler: 'custom-controller.paySelected'
         },    
     ]
 }
