@@ -12,6 +12,11 @@ module.exports = {
             path: '/payment/summary',
             handler: 'custom-controller.summary'
         },    
+         {
+            method: "GET",
+            path: '/payment/tuition_fee/summary',
+            handler: 'custom-controller.getTuitionFeeSummary'
+        },   
         {
             method: "GET",
             path: '/payment/dues',

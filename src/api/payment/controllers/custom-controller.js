@@ -24,6 +24,96 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
       return ctx.badRequest(err.message, err);
     }
   },
+  async getTuitionFeeSummary(ctx) {
+    const queryObj = ctx.request.query;
+    const studentid = queryObj.student_id;
+    const semester = queryObj.semester;
+    const school_year = queryObj.school_year;
+
+    // Get unpaid or partially paid tuition of the student
+    const tuition_fee_summary = await strapi.entityService.findMany(
+      "api::payment.payment",
+      {
+        fields: [
+          "tuition_fee_id",
+          "student_id",
+          "student_no",
+          "semester",
+          "school_year",
+          "payment_number",
+          "payment_name",
+          "payment_amount",
+          "amount_paid",
+          "due_date",
+          "date_paid",
+          "or_number",
+          "payment_status",
+          "payment_type",
+          "createdAt",
+        ],
+        filters: {
+          student_id: queryObj.student_id,
+          semester: queryObj.semester,
+          school_year: queryObj.school_year,
+          payment_status: ["unpaid", "paid", "partial"],
+        },
+        orderBy: { payment_number: "ASC" },
+        pagination: { pageSize: 1000 },
+      }
+    );
+    console.log("Tuition Fee Summary: ", tuition_fee_summary);
+
+    if (tuition_fee_summary.length === 0) {
+      return ctx.send({
+        message: 'No Tuition Fee found',
+        status: 'fail'
+      }, 200);
+    }
+
+    const today = new Date();
+    let previousDue = 0;
+    let currentDue = 0;
+    let totalAmountDue = 0;
+    let totalBalance = 0;
+
+    const enrichedInvoices = tuition_fee_summary.map(tuition_summary => {
+      const balance = tuition_summary.payment_amount - tuition_summary.amount_paid;
+      // if (balance <= 0) return null;
+
+      const dueDate = parseISO(tuition_summary.due_date);
+      const dueToday = isToday(dueDate);
+      const overdue = !dueToday && isBefore(dueDate, today);
+
+      if (overdue) {
+        previousDue += balance;
+      } else if (dueToday) {
+        currentDue += balance;
+      }
+
+      totalBalance += balance;
+      totalAmountDue = previousDue + currentDue;
+
+      return {
+        ...tuition_summary,
+        balance,
+        isOverdue: overdue,
+        isDueToday: dueToday
+      }
+    }).filter(Boolean);
+
+    ctx.body = {
+      studentid,
+      semester,
+       school_year,
+      previousDue,
+      currentDue,
+      totalAmountDue,
+      //payment_summary,
+      totalBalance,
+      summary: enrichedInvoices,
+    };
+
+  },
 
   async dues(ctx) {
     const { tuitionid } = ctx.params;
