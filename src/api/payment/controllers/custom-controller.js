@@ -75,6 +75,7 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
     let currentDue = 0;
     let totalAmountDue = 0;
     let totalBalance = 0;
+    let totalAmountPaid = 0;
 
     const enrichedInvoices = tuition_fee_summary.map(tuition_summary => {
       const balance = tuition_summary.payment_amount - tuition_summary.amount_paid;
@@ -89,6 +90,8 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
       } else if (dueToday) {
         currentDue += balance;
       }
+
+      totalAmountPaid += tuition_summary.amount_paid || 0;
 
       totalBalance += balance;
       totalAmountDue = previousDue + currentDue;
@@ -108,6 +111,7 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
       previousDue,
       currentDue,
       totalAmountDue,
+      totalAmountPaid,
       //payment_summary,
       totalBalance,
       summary: enrichedInvoices,
@@ -249,6 +253,7 @@ module.exports = createCoreController("api::payment.payment", ({ strapi }) => ({
     try {
       const results = await Promise.all(
         updates.map(async (update) => {
+          // const { id, ...fields } = update;
           const { id, ...fields } = update;
           if(!id || Object.keys(fields).length === 0) return null;
 
