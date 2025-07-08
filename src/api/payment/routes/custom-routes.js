@@ -26,6 +26,16 @@ module.exports = {
             method: "POST",
             path: '/payment/tuition-payment',
             handler: 'custom-controller.paySelected'
-        },    
+        }, 
+        {
+            method: "PUT",
+            path: '/payment/update-next-due',
+            handler: 'custom-controller.updateCurrentDueWithPrevious'
+        },
+        {
+            method: "PUT",
+            path: '/payment/update/overdue-status',
+            handler: 'custom-controller.updateOverdueStatuses'
+        } 
     ]
 }

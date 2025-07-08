@@ -398,7 +398,7 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     payment_name: Schema.Attribute.String;
     payment_number: Schema.Attribute.Integer;
     payment_status: Schema.Attribute.Enumeration<
-      ['paid', 'unpaid', 'partial']
+      ['paid', 'unpaid', 'partial', 'overdue']
     > &
       Schema.Attribute.DefaultTo<'unpaid'>;
     payment_type: Schema.Attribute.Enumeration<
